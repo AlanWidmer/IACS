@@ -1,0 +1,88 @@
+Partlist exported from H:/apps/eagle/projects/RFID/RFID_board_v200.sch at 1/20/2011 10:33:13 PM
+
+Part    Value               Device               Package            Description                                                                                  DIGIKEY       MOUSER     
+5VOUT                       W237-102             W237-102           WAGO SCREW CLAMP                                                                                           651-1935161
+12VIN                       W237-102             W237-102           WAGO SCREW CLAMP                                                                                           651-1935161
+12VOUTA                     W237-102             W237-102           WAGO SCREW CLAMP                                                                                           651-1935161
+12VOUTB                     W237-102             W237-102           WAGO SCREW CLAMP                                                                                           651-1935161
+BAT1                        BATTERY20PTH         BATTCOM_20MM_PTH   Battery Holders                                                                                            122-2420-GR
+C1      100uF               CPOL-USE3.5-8        E3,5-8             POLARIZED CAPACITOR, American symbol                                                                                  
+C2      0.1uF               C-US050-025X075      C050-025X075       CAPACITOR, American symbol                                                                                            
+C3      330uF               CPOL-USE3.5-8        E3,5-8             POLARIZED CAPACITOR, American symbol                                                                                  
+D1      1N5819              1N5819-B             DO41-7.6           1.0A SCHOTTKY BARRIER RECTIFIER                                                                                       
+D2      15KE18A             15KE18A              DO201-15           TVS Diode, 18V                                                                                                         
+D3	15KE6.8A	    15KE6.8A				    TVS Diode, 6.8V
+D5      1N4004              1N4004               DO41-10            DIODE                                                                                                                 
+D6      1N4004              1N4004               DO41-10            DIODE                                                                                                                 
+D7      1N4004              1N4004               DO41-10            DIODE                                                                                                                 
+D8      1N4004              1N4004               DO41-10            DIODE                                                                                                                 
+D9      1N4004              1N4004               DO41-10            DIODE                                                                                                                 
+D10     1N4004              1N4004               DO41-10            DIODE                                                                                                                 
+D11     1N4004              1N4004               DO41-10            DIODE                                                                                                                 
+D12     1N4004              1N4004               DO41-10            DIODE                                                                                                                 
+D13     5A                  DIODE-P6-15          P6-15              DIODE                                                                                                                 
+F1      2A                  5X20MMCLIP           SHK20Q             FUSE HOLDER Littelfuse 01110506H 5x20mm clips. Mouser part #576-01110506H                    F044-ND                  
+F4      5A                  5X20MMCLIP           SHK20Q             FUSE HOLDER Littelfuse 01110506H 5x20mm clips. Mouser part #576-01110506H                    F044-ND                  
+F6      2A                  5X20MMCLIP           SHK20Q             FUSE HOLDER Littelfuse 01110506H 5x20mm clips. Mouser part #576-01110506H                    F044-ND                  
+F7      0.5A                5X20MMCLIP           SHK20Q             FUSE HOLDER Littelfuse 01110506H 5x20mm clips. Mouser part #576-01110506H                    F044-ND                  
+IC1     DS1307              DS1307               DIL08              DS1307                                                                                       DS1307+-ND    700-DS1307 
+IC5     ULN2003             ULN2003AN            DIL16              DRIVER ARRAY                                                                                                          
+K0      GL5E-12V            ZNS5106              ZN5                Miniature Power PCB Relay SCHRACK                                                            Z1012-ND                 
+K1      GL5E-12V            ZNS5106              ZN5                Miniature Power PCB Relay SCHRACK                                                            Z1012-ND                         
+K2      GL5E-12V            ZNS5106              ZN5                Miniature Power PCB Relay SCHRACK                                                            Z1012-ND                 
+K3      GL5E-12V            ZNS5106              ZN5                Miniature Power PCB Relay SCHRACK                                                            Z1012-ND                 
+LED1    RED                 LED5MM               LED5MM             LED                                                                                                                   
+LED2    RED                 LED5MM               LED5MM             LED                                                                                                                   
+LED3    RED                 LED5MM               LED5MM             LED                                                                                                                   
+LED4    RED                 LED5MM               LED5MM             LED                                                                                                                   
+LED5    GRN                 LED5MM               LED5MM             LED                                                                                                                   
+OK1     PS-2501             PS2501               DIL08              NEC PS OPTO COUPLER                                                                                                   
+OK2     PS-2501             PS2501               DIL08              NEC PS OPTO COUPLER                                                                                                   
+OK3     PS-2501             PS2501               DIL08              NEC PS OPTO COUPLER                                                                                                   
+OK4     PS-2501             PS2501               DIL08              NEC PS OPTO COUPLER                                                                                                   
+Q1      32Khz               CRYSTALTC26H         TC26H              CRYSTAL                                                                                                               
+R1      2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R2      S10K30              S10K30               S10K               VARISTOR  - 30V, 10mm package                                                                                         
+R3      2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R4      2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R5      4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R6      2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R7      4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R8      330                 R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R9      4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R11     4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R12     4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R15     2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R16     2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R17     2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R18     2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R20     2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R22     4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R23     2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R25     2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R27     4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R28     4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R32     2.2K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R33     4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+R34     4.7K                R-US_0207/10         0207/10            RESISTOR, American symbol                                                                                             
+READER1                     W237-102             W237-102           WAGO SCREW CLAMP                                                                                           651-1935161
+READER2                     W237-102             W237-102           WAGO SCREW CLAMP                                                                                           651-1935161
+RELAY0                      W237-103             W237-103           WAGO SCREW CLAMP                                                                                           651-1935174
+RELAY1                      W237-103             W237-103           WAGO SCREW CLAMP                                                                                           651-1935174
+RELAY2                      W237-103             W237-103           WAGO SCREW CLAMP                                                                                           651-1935174
+RELAY3                      W237-103             W237-103           WAGO SCREW CLAMP                                                                                           651-1935174
+SENS1                       W237-102             W237-102           WAGO SCREW CLAMP                                                                                           651-1935161
+SENS2                       W237-102             W237-102           WAGO SCREW CLAMP                                                                                           651-1935161
+U$1     LM2575              LM2575               TO220-5PIN-1       Fixed 5V Simple Switcher from National, staggered pins                                                                
+U$2     330uH               PE-52647NLPE-52647NL PE-52647-NL        330uH, 1A Inductor from Pulse Engineering. Used with National Semiconductor Simple Switcher. 553-1558-5-ND            
+
+Misc:
+(1) ARDUINO_SHIELDLABEL 					    Arduino shield pins (2x6-pin, 2x8-pin). Purchase from Sparkfun.com or Adafruit.com
+(1) BATT	 CR-2032 Battery
+(1) HEATSINK Small TO220 heatsink, mounting screw+nut
+(1) 5A 5x20mm fuse
+(1) 500ma 5x20mm fuse
+(2) 2A 5x20mm fuse
+(3) 16-pin DIP socket (optional)
+(1) 8-pin DIP socket (optional)
+                                                                                                                   

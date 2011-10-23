@@ -1,0 +1,28 @@
+Open Access Control Notes
+Updated 4/3/2011
+
+Relay pins:
+6,7,8,9
+
+I2C for clock:
+A4 (SDA)
+A5 (SCL)
+`
+Analog pins (for alarm):
+A0,A1,A2,A3
+
+Reader inputs
+Reader 1: 2,3
+Reader 2: 4,5
+
+Ethernet shield:
+10,11,12,13
+
+
+Changes sicne v2.00:
+1.  Added additional TVS diode on the +5V rail
+2.  Adjusted board layout so that insulator not needed under voltage regulator
+3.  Tidied up silkscreen on top and bottom layers
+
+
+
