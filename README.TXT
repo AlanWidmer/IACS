@@ -1,0 +1,2 @@
+The project is a fork of the shop.23b.org 'open access controller'. For the Jigsaw Renaissance space in the Inscape building we need to make some changes and additions.
+The door controller will use the wireless ethernet infrastructure to pull a file that contains the list of valid keys from a server.
