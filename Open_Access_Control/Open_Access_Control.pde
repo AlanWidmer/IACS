@@ -14,7 +14,6 @@
  *
  *
  * For latest downloads, including Eagle CAD files for the hardware, check out
- 
  * http://code.google.com/p/open-access-control/downloads/list
  *
  * Latest update moves strings to PROGMEM to free up memory and adds a 
@@ -52,13 +51,15 @@
 #include <Wire.h>         // Needed for I2C Connection to the DS1307 date/time chip
 #include <EEPROM.h>       // Needed for saving to non-voilatile memory on the Arduino.
 #include <avr/pgmspace.h> // Allows data to be stored in FLASH instead of RAM
+#include <PN532.h>
 
 
+/*
 #include <Ethernet.h>   // Ethernet stuff, comment out if not used.
 #include <SPI.h>          
 #include <Server.h>
 #include <Client.h>
-
+*/
 
 #include <DS1307.h>       // DS1307 RTC Clock/Date/Time chip library
 #include <WIEGAND26.h>    // Wiegand 26 reader format libary
@@ -71,8 +72,8 @@
 #define DEBUG 1                         // Set to 2 for display of raw tag numbers in log files, 1 for only denied, 0 for never.               
 
 #define gonzo   0x1234                  // Name and badge number in HEX. We are not using checksums or site ID, just the whole
-#define snake   0x1234                  // output string from the reader.
-#define satan   0x1234
+#define snake   1234                    // output string from the reader.
+#define satan   12345678
 const long  superUserList[] = { gonzo, snake, satan};  // Super user table (cannot be changed by software)
 
 #define PRIVPASSWORD 0x1234             // Console "priveleged mode" password
@@ -94,6 +95,11 @@ const long  superUserList[] = { gonzo, snake, satan};  // Super user table (cann
 #define DOORPIN2 relayPins[2]           // Define the pin for electrified door 2 hardware
 #define ALARMSTROBEPIN relayPins[3]     // Define the "non alarm: output pin. Can go to a strobe, small chime, etc
 #define ALARMSIRENPIN  relayPins[1]     // Define the alarm siren pin. This should be a LOUD siren for alarm purposes.
+
+#define SCK 13
+#define MOSI 11
+#define SS 10
+#define MISO 12
 
 byte reader1Pins[]={2,3};               // Reader 1 connected to pins 4,5
 byte reader2Pins[]= {4,5};              // Reader2 connected to pins 6,7
@@ -123,7 +129,7 @@ byte consoleFail=0;
 #define numAlarmPins (sizeof(analogsensorPins)/sizeof(byte))
 
 //Other global variables
-byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;     // Global RTC clock variables. Can be set using .getDate function.
+byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;     // Global RTC clock variables. Can be set using DS1307.getDate function.
 
 byte alarmActivated = EEPROM.read(EEPROM_ALARM);                   // Read the last alarm state as saved in eeprom.
 byte alarmArmed = EEPROM.read(EEPROM_ALARMARMED);                  // Alarm level variable (0..5, 0==OFF) 
@@ -141,8 +147,8 @@ int userMask1=0;
 int userMask2=0;
 boolean keypadGranted=0;                                       // Variable that is set for authenticated users to use keypad after login
 
-//volatile long reader3 = 0;                                   // Uncomment if using a third reader.
-//volatile int  reader3Count = 0;
+volatile long reader3 = 0;                                   // Uncomment if using a third reader.
+volatile int  reader3Count = 0;
 
 unsigned long keypadTime = 0;                                  // Timeout counter for  reader with key pad
 unsigned long keypadValue=0;
@@ -161,6 +167,7 @@ boolean privmodeEnabled = false;                               // Switch for ena
 DS1307 ds1307;        // RTC Instance
 WIEGAND26 wiegand26;  // Wiegand26 (RFID reader serial protocol) library
 PCATTACH pcattach;    // Software interrupt library
+PN532 nfc(SCK, MISO, MOSI, SS);
 
 /* Set up some strings that will live in flash instead of memory. This saves our precious 2k of
  * RAM for something else.
@@ -209,7 +216,11 @@ void setup(){           // Runs once at Arduino boot-up
   //Clear and initialize readers
   wiegand26.initReaderOne(); //Set up Reader 1 and clear buffers.
   wiegand26.initReaderTwo(); 
+  nfc.begin();
 
+
+  // configure board to read RFID tags and cards
+  nfc.SAMConfig();
 
   //Initialize output relays
 
@@ -219,7 +230,7 @@ void setup(){           // Runs once at Arduino boot-up
   }
 
 
-//ds1307.setDateDs1307(0,55,15,7,1,10,11);         
+ //ds1307.setDateDs1307(0,37,23,6,25,2,11);         
   /*  Sets the date/time (needed once at commissioning)
    
    byte second,        // 0-59
@@ -237,6 +248,17 @@ void setup(){           // Runs once at Arduino boot-up
   logReboot();
   chirpAlarm(1);                               // Chirp the alarm to show system ready.
 
+  uint32_t versiondata = nfc.getFirmwareVersion();
+  if (versiondata == 0) {
+      Serial.println("Didn't find PN53x board");
+  }
+  else {
+    // Got ok data, print it out!
+    Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX);
+    Serial.print("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC);
+    Serial.print('.'); Serial.println((versiondata>>8) & 0xFF, DEC);
+    Serial.print("Supports "); Serial.println(versiondata & 0xFF, HEX);
+  }
 //  hardwareTest(100);                         // IO Pin testing routing (use to check your inputs with hi/lo +(5-12V) sources)
                                                // Also checks relays
 
@@ -941,10 +963,6 @@ void logDate()
   Serial.print(":");
   Serial.print(minute, DEC);
   Serial.print(":");
-  if (second <10)
-  {
-    Serial.print("0");
-  }
   Serial.print(second, DEC);
   Serial.print("  ");
   Serial.print(month, DEC);
