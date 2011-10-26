@@ -50,7 +50,7 @@ uint32_t PN532::getFirmwareVersion(void) {
     // read data packet
     readspidata(pn532_packetbuffer, 12);
     // check some basic stuff
-    if (0 != strncmp((char *)pn532_packetbuffer, (char *)pn532response_firmwarevers, 6)) {
+    if (0 != strncmp((const char *)pn532_packetbuffer, (const char *)pn532response_firmwarevers, (size_t) 6)) {
         return 0;
     }
 

@@ -7,12 +7,12 @@
 #include <WIEGAND26.h>
 
 extern byte reader1Pins[];          // Reader 1 connected to pins [n,n]
-extern byte reader2Pins[];          // Reader2 connected to pins [n,n]
+// TODO extern byte reader2Pins[];          // Reader2 connected to pins [n,n]
 extern byte reader3Pins[];          // Reader3 connected to pins [n,n]
 extern long reader1;
 extern int  reader1Count;
-extern long reader2;
-extern int  reader2Count;
+// TODO extern long reader2;
+// TODO extern int  reader2Count;
 extern long reader3;
 extern int reader3Count;
 
@@ -44,7 +44,7 @@ void WIEGAND26::initReaderOne(void) {
   reader1=0;
 }
 
-
+#ifdef TODO
 void  WIEGAND26::initReaderTwo(void) {
   for(byte i=0; i<2; i++){
     pinMode(reader2Pins[i], OUTPUT);
@@ -57,7 +57,7 @@ void  WIEGAND26::initReaderTwo(void) {
   reader2Count=0;
   reader2=0;
 }
-
+#endif
 
 
 void  WIEGAND26::reader1One() {
@@ -76,7 +76,7 @@ void  WIEGAND26::reader1Zero() {
   }
 }
 
-
+#ifdef TODO
 void  WIEGAND26::reader2One() {
   if(digitalRead(reader2Pins[1]) == LOW){
     reader2Count++;
@@ -91,7 +91,7 @@ void  WIEGAND26::reader2Zero(void) {
     reader2 = reader2 << 1;  
   }
 }
-
+#endif
 
 
 void  WIEGAND26::initReaderThree(void) {

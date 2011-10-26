@@ -51,8 +51,6 @@
 #include <Wire.h>         // Needed for I2C Connection to the DS1307 date/time chip
 #include <EEPROM.h>       // Needed for saving to non-voilatile memory on the Arduino.
 #include <avr/pgmspace.h> // Allows data to be stored in FLASH instead of RAM
-#include <PN532.h>
-
 
 /*
 #include <Ethernet.h>   // Ethernet stuff, comment out if not used.
@@ -64,7 +62,7 @@
 #include <DS1307.h>       // DS1307 RTC Clock/Date/Time chip library
 #include <WIEGAND26.h>    // Wiegand 26 reader format libary
 #include <PCATTACH.h>     // Pcint.h implementation, allows for >2 software interupts.
-
+#include <PN532.h>
 
 /* Static user List - Implemented as an array for testing and access override 
  */                               
@@ -98,11 +96,11 @@ const long  superUserList[] = { gonzo, snake, satan};  // Super user table (cann
 
 #define SCK 13
 #define MOSI 11
-#define SS 10
+#define NFC_SS 4
 #define MISO 12
 
 byte reader1Pins[]={2,3};               // Reader 1 connected to pins 4,5
-byte reader2Pins[]= {4,5};              // Reader2 connected to pins 6,7
+// TODO byte reader2Pins[]= {4,5};              // Reader2 connected to pins 6,7
 
 //byte reader3Pins[]= {10,11};                // Reader3 connected to pins X,Y (Not implemented on v1.x and 2.x Access Control Board)
 
@@ -167,7 +165,7 @@ boolean privmodeEnabled = false;                               // Switch for ena
 DS1307 ds1307;        // RTC Instance
 WIEGAND26 wiegand26;  // Wiegand26 (RFID reader serial protocol) library
 PCATTACH pcattach;    // Software interrupt library
-PN532 nfc(SCK, MISO, MOSI, SS);
+PN532 nfc(SCK, MISO, MOSI, NFC_SS);
 
 /* Set up some strings that will live in flash instead of memory. This saves our precious 2k of
  * RAM for something else.
@@ -210,17 +208,15 @@ void setup(){           // Runs once at Arduino boot-up
    */
   pcattach.PCattachInterrupt(reader1Pins[0], callReader1Zero, CHANGE); 
   pcattach.PCattachInterrupt(reader1Pins[1], callReader1One,  CHANGE);  
-  pcattach.PCattachInterrupt(reader2Pins[1], callReader2One,  CHANGE);
-  pcattach.PCattachInterrupt(reader2Pins[0], callReader2Zero, CHANGE);
+  // pcattach.PCattachInterrupt(reader2Pins[1], callReader2One,  CHANGE);
+  // pcattach.PCattachInterrupt(reader2Pins[0], callReader2Zero, CHANGE);
 
   //Clear and initialize readers
   wiegand26.initReaderOne(); //Set up Reader 1 and clear buffers.
-  wiegand26.initReaderTwo(); 
+  // TODO wiegand26.initReaderTwo(); 
   nfc.begin();
+  uint32_t versiondata = nfc.getFirmwareVersion();
 
-
-  // configure board to read RFID tags and cards
-  nfc.SAMConfig();
 
   //Initialize output relays
 
@@ -248,7 +244,6 @@ void setup(){           // Runs once at Arduino boot-up
   logReboot();
   chirpAlarm(1);                               // Chirp the alarm to show system ready.
 
-  uint32_t versiondata = nfc.getFirmwareVersion();
   if (versiondata == 0) {
       Serial.println("Didn't find PN53x board");
   }
@@ -261,6 +256,9 @@ void setup(){           // Runs once at Arduino boot-up
   }
 //  hardwareTest(100);                         // IO Pin testing routing (use to check your inputs with hi/lo +(5-12V) sources)
                                                // Also checks relays
+
+  // configure board to read RFID tags and cards
+  nfc.SAMConfig();
 
 
 }
@@ -479,7 +477,7 @@ readCommand();                                 // Check for commands entered at 
           }
     }
     
-    wiegand26.initReaderTwo();                   //  Reset for next tag scan
+    // TODO wiegand26.initReaderTwo();                   //  Reset for next tag scan
     unsigned long keypadTime=0;                  //  Timeout counter for  reader with key pad
     long keypadValue=0;
     keypadTime=millis();  
@@ -499,7 +497,7 @@ readCommand();                                 // Check for commands entered at 
               keypadValue = keypadValue <<4;
               keypadValue |= reader2;               
             }
-            wiegand26.initReaderTwo();                         //Reset reader one and move on.
+            // TODO wiegand26.initReaderTwo();                         //Reset reader one and move on.
           } 
           else break;
 
@@ -509,11 +507,11 @@ readCommand();                                 // Check for commands entered at 
 
         logkeypadCommand(2,keypadValue);
         runCommand(keypadValue);                              // Run any commands entered at the keypads.
-        wiegand26.initReaderTwo();
+        // TODO wiegand26.initReaderTwo();
       
 
    }
-    wiegand26.initReaderTwo();                    
+    // TODO wiegand26.initReaderTwo();                    
   } 
 
 
