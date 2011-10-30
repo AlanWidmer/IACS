@@ -15,6 +15,8 @@ byte pn532response_firmwarevers[] = {0x00, 0xFF, 0x06, 0xFA, 0xD5, 0x03};
 #define PN532_PACKBUFFSIZ 64
 byte pn532_packetbuffer[PN532_PACKBUFFSIZ];
 
+SPIClass PN532_SPI;
+
 PN532::PN532(uint8_t clk, uint8_t miso, uint8_t mosi, uint8_t ss) {
     _clk = clk;
     _miso = miso;
@@ -83,7 +85,7 @@ boolean PN532::sendCommandCheckAck(uint8_t *cmd, uint8_t cmdlen, uint16_t timeou
         delay(10);
     }
 
-    // read acknowledgement
+    // read acknowledgment
     if (!spi_readack()) {
         return false;
     }
@@ -282,7 +284,8 @@ uint32_t PN532::readPassiveTargetID(uint8_t cardbaudrate) {
         idStartPos = 14;
         break;
       default:
-        Serial.print("Unknown Sel Response");      
+        Serial.print("Unknown Sel Response");
+        break;
     }
     
     for (uint8_t i=0; i < 4; i++) {
@@ -406,6 +409,10 @@ void PN532::spiwritecommand(uint8_t* cmd, uint8_t cmdlen) {
 /************** low level SPI */
 
 void PN532::spiwrite(uint8_t c) {
+    /* TODO remove conditional once it's in the SPI library */
+#ifndef SOFTWARE_SPI
+    PN532_SPI.transfer(c);
+#else
     int8_t i;
     digitalWrite(_clk, HIGH);
 
@@ -418,13 +425,17 @@ void PN532::spiwrite(uint8_t c) {
         }
         digitalWrite(_clk, HIGH);
     }
+#endif
 }
 
 uint8_t PN532::spiread(void) {
-    int8_t i, x;
+    int8_t x;
     x = 0;
+#ifndef SOFTWARE_SPI
+    x = PN532_SPI.transfer(0);
+#else
+    int8_t i;
     digitalWrite(_clk, HIGH);
-
     for (i=0; i<8; i++) {
         if (digitalRead(_miso)) {
             x |= _BV(i);
@@ -432,5 +443,6 @@ uint8_t PN532::spiread(void) {
         digitalWrite(_clk, LOW);
         digitalWrite(_clk, HIGH);
     }
+#endif
     return x;
 }

@@ -5,6 +5,7 @@
  * Last build test with Arduino v00.21
  * Arclight - arclight@23.org
  * Danozano - danozano@gmail.com
+ * Alan - alan@jigsawrenaissance.org
  *
  * Notice: This is free software and is probably buggy. Use it at
  * at your own peril.  Use of this software may result in your
@@ -47,6 +48,10 @@
  * Compile and upload the code, then log in via serial console at 57600,8,N,1
  *
  */
+
+/* TODO: The SPI interface from the PN532 library is not compatible with the SD card */
+/* Replace both with calls to the SPI library */
+
 
 #include <Wire.h>         // Needed for I2C Connection to the DS1307 date/time chip
 #include <EEPROM.h>       // Needed for saving to non-voilatile memory on the Arduino.

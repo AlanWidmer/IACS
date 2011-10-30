@@ -2,10 +2,10 @@
 
 #define SCK 13
 #define MOSI 11
-#define SS 4
+#define NFC_SS 4
 #define MISO 12
 
-PN532 nfc(SCK, MISO, MOSI, SS);
+PN532 nfc(SCK, MISO, MOSI, NFC_SS);
 
 void setup(void) {
     Serial.begin(57600);
