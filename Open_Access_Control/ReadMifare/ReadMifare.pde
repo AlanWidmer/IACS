@@ -1,3 +1,4 @@
+#include <SPI.h>
 #include <PN532.h>
 
 #define SCK 13

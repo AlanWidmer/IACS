@@ -15,7 +15,7 @@ byte pn532response_firmwarevers[] = {0x00, 0xFF, 0x06, 0xFA, 0xD5, 0x03};
 #define PN532_PACKBUFFSIZ 64
 byte pn532_packetbuffer[PN532_PACKBUFFSIZ];
 
-SPIClass PN532_SPI;
+extern SPIClass PN532_SPI;
 
 PN532::PN532(uint8_t clk, uint8_t miso, uint8_t mosi, uint8_t ss) {
     _clk = clk;
@@ -27,10 +27,14 @@ PN532::PN532(uint8_t clk, uint8_t miso, uint8_t mosi, uint8_t ss) {
     pinMode(_clk, OUTPUT);
     pinMode(_mosi, OUTPUT);
     pinMode(_miso, INPUT);
+    PN532_SPI.begin();
 }
 
 void PN532::begin() {
     digitalWrite(_ss, LOW);
+    PN532_SPI.setDataMode(0);
+    PN532_SPI.setBitOrder(0);
+    PN532_SPI.setClockDivider(0);
 
     delay(1000);
 
@@ -299,6 +303,8 @@ uint32_t PN532::readPassiveTargetID(uint8_t cardbaudrate) {
     {
         Serial.print(pn532_packetbuffer[i], HEX); Serial.println(" ");
     }
+#elseif
+    Serial.println(""); // Print new line at the end of this function.
 #endif  
     return cid;
 }

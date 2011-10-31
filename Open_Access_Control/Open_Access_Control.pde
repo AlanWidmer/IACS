@@ -35,7 +35,7 @@
  * Version 1.00+ of the hardware implements these features and uses the following pin 
  * assignments on a standard Arduino Duemilanova or Uno:
  *
- * Relay outpus on digital pins 6,7,8,9
+ * Relay outputs on digital pins 6,7,8,9
  * DS1307 Real Time Clock (I2C):A4 (SDA), A5 (SCL)
  * Analog pins (for alarm):A0,A1,A2,A3 
  * Reader 1: pins 2,3
@@ -51,10 +51,9 @@
 
 /* TODO: The SPI interface from the PN532 library is not compatible with the SD card */
 /* Replace both with calls to the SPI library */
-
-
+/* TODO Put the readers into a class so it is easy to change the number of instantiated readers */
 #include <Wire.h>         // Needed for I2C Connection to the DS1307 date/time chip
-#include <EEPROM.h>       // Needed for saving to non-voilatile memory on the Arduino.
+#include <EEPROM.h>       // Needed for saving to non-volatile memory on the Arduino.
 #include <avr/pgmspace.h> // Allows data to be stored in FLASH instead of RAM
 
 /*
@@ -65,8 +64,8 @@
 */
 
 #include <DS1307.h>       // DS1307 RTC Clock/Date/Time chip library
-#include <WIEGAND26.h>    // Wiegand 26 reader format libary
-#include <PCATTACH.h>     // Pcint.h implementation, allows for >2 software interupts.
+#include <WIEGAND26.h>    // Wiegand 26 reader format library
+#include <PCATTACH.h>     // Pcint.h implementation, allows for >2 software interrupts.
 #include <PN532.h>
 
 /* Static user List - Implemented as an array for testing and access override 
@@ -79,7 +78,7 @@
 #define satan   12345678
 const long  superUserList[] = { gonzo, snake, satan};  // Super user table (cannot be changed by software)
 
-#define PRIVPASSWORD 0x1234             // Console "priveleged mode" password
+#define PRIVPASSWORD 0x1234             // Console "privileged mode" password
 
 #define DOORDELAY 5000                  // How long to open door lock once access is granted. (2500 = 2.5s)
 #define SENSORTHRESHOLD 100             // Analog sensor change that will trigger an alarm (0..255)
@@ -104,6 +103,7 @@ const long  superUserList[] = { gonzo, snake, satan};  // Super user table (cann
 #define NFC_SS 4
 #define MISO 12
 
+// TODO find out from Arclight why the comments don't match the code
 byte reader1Pins[]={2,3};               // Reader 1 connected to pins 4,5
 // TODO byte reader2Pins[]= {4,5};              // Reader2 connected to pins 6,7
 
@@ -149,6 +149,7 @@ volatile int  reader2Count = 0;
 int userMask1=0;
 int userMask2=0;
 boolean keypadGranted=0;                                       // Variable that is set for authenticated users to use keypad after login
+long nfcId;
 
 volatile long reader3 = 0;                                   // Uncomment if using a third reader.
 volatile int  reader3Count = 0;
@@ -160,7 +161,7 @@ unsigned long keypadValue=0;
 // Serial terminal buffer (needs to be global)
 char inString[40]={0};                                         // Size of command buffer (<=128 for Arduino)
 byte inCount=0;
-boolean privmodeEnabled = false;                               // Switch for enabling "priveleged" commands
+boolean privmodeEnabled = false;                               // Switch for enabling "privileged" commands
 
 
 
@@ -181,9 +182,9 @@ const prog_uchar rebootMessage[]          PROGMEM  = {"Access Control System reb
 const prog_uchar doorChimeMessage[]       PROGMEM  = {"Front Door opened."};
 const prog_uchar doorslockedMessage[]     PROGMEM  = {"All Doors relocked"};
 const prog_uchar alarmtrainMessage[]      PROGMEM  = {"Alarm Training performed."};
-const prog_uchar privsdeniedMessage[]     PROGMEM  = {"Access Denied. Priveleged mode is not enabled."};
-const prog_uchar privsenabledMessage[]    PROGMEM  = {"Priveleged mode enabled."};
-const prog_uchar privsdisabledMessage[]   PROGMEM  = {"Priveleged mode disabled."};
+const prog_uchar privsdeniedMessage[]     PROGMEM  = {"Access Denied. Privileged mode is not enabled."};
+const prog_uchar privsenabledMessage[]    PROGMEM  = {"Privileged mode enabled."};
+const prog_uchar privsdisabledMessage[]   PROGMEM  = {"Privileged mode disabled."};
 const prog_uchar privsAttemptsMessage[]   PROGMEM  = {"Too many failed attempts. Try again later."};
 
 const prog_uchar consolehelpMessage1[]    PROGMEM  = {"Valid commands are:"};
@@ -191,7 +192,7 @@ const prog_uchar consolehelpMessage2[]    PROGMEM  = {"(d)ate, (s)show user, (m)
 const prog_uchar consolehelpMessage3[]    PROGMEM  = {"(a)ll user dump,(r)emove_user <num>,(o)open door <num>"};
 const prog_uchar consolehelpMessage4[]    PROGMEM  = {"(u)nlock all doors,(l)lock all doors"};
 const prog_uchar consolehelpMessage5[]    PROGMEM  = {"(1)disarm_alarm, (2)arm_alarm,(3)train_alarm (9)show_status"};
-const prog_uchar consolehelpMessage6[]    PROGMEM  = {"(e)nable <password> - enable or disable priveleged mode"};                                       
+const prog_uchar consolehelpMessage6[]    PROGMEM  = {"(e)nable <password> - enable or disable privileged mode"};
 const prog_uchar consoledefaultMessage[]  PROGMEM  = {"Invalid command. Press '?' for help."};
 
 const prog_uchar statusMessage1[]         PROGMEM  = {"Alarm armed state (1=armed):"};
@@ -311,13 +312,10 @@ readCommand();                                 // Check for commands entered at 
 
   if(hour==23 && minute==59 && door1Locked==false){
          doorLock(1);
-         door1Locked==true;      
+// TODO Let Arclight know that the line below used to read door1Locked == true;
+         door1Locked = true;
          Serial.println("Door 1 locked for 2359 bed time.");
   }
-
-          
-
-
 
 
 
@@ -406,6 +404,13 @@ readCommand();                                 // Check for commands entered at 
 
 
 
+  reader2 = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A);
+  if (reader2 != 0) {
+	  reader2Count = 32;
+  }
+  else {
+	  reader2Count = 0;
+  }
   
   if(reader2Count >= 26){                                // Tag presented to reader 2
     logTagPresent(reader2,2);                            // Write log entry to serial port
@@ -551,7 +556,7 @@ readCommand();                                 // Check for commands entered at 
               alarmDelay=millis();
               if(sensor[0]==false) {                // Only log and save if sensor activation is new.
                logalarmSensor(0);
-               EEPROM.write(EEPROM_ALARM,0);        // Save the alarm sensor tripped to eeprom                                      
+               EEPROM.write(EEPROM_ALARM,0);        // Save the alarm sensor tripped to EEPROM
                sensor[0]=true;                      // Set value to not log this again                                                                        
               }
            } 
@@ -559,7 +564,7 @@ readCommand();                                 // Check for commands entered at 
             alarmState(1);      
              if(sensor[1]==false) {                // Only log and save if sensor activation is new.
               logalarmSensor(1);
-              EEPROM.write(EEPROM_ALARM,1);        // Save the alarm sensor tripped to eeprom                                     
+              EEPROM.write(EEPROM_ALARM,1);        // Save the alarm sensor tripped to EEPROM
               sensor[1]=true;                      // Set value to not log this again
              }  
           }
@@ -567,7 +572,7 @@ readCommand();                                 // Check for commands entered at 
             alarmState(1);      
              if(sensor[2]==false) {                // Only log and save if sensor activation is new.
               logalarmSensor(2);
-              EEPROM.write(EEPROM_ALARM,2);        // Save the alarm sensor tripped to eeprom                                     
+              EEPROM.write(EEPROM_ALARM,2);        // Save the alarm sensor tripped to EEPROM
               sensor[2]=true;                      // Set value to not log this again
              }    
 
@@ -578,7 +583,7 @@ readCommand();                                 // Check for commands entered at 
               alarmDelay=millis();
               if(sensor[3]==false) {                // Only log and save if sensor activation is new.
                logalarmSensor(3);
-               EEPROM.write(EEPROM_ALARM,3);        // Save the alarm sensor tripped to eeprom                                      
+               EEPROM.write(EEPROM_ALARM,3);        // Save the alarm sensor tripped to EEPROM
                sensor[3]=true;                      // Set value to not log this again                                                                        
               }
            }    
@@ -762,7 +767,7 @@ void alarmState(byte alarmLevel) {                    //Changes the alarm status
   case 1: 
     { 
       digitalWrite(ALARMSIRENPIN, HIGH);               // If alarmLevel == 1 turn on strobe lights and siren
-  //    digitalWrite(ALARMSTROBEPIN, HIGH);            // Optionally activate yoru strobe/chome
+  //    digitalWrite(ALARMSTROBEPIN, HIGH);            // Optionally activate your strobe/chime
       alarmSirenTimer=millis();
       alarmActivated = alarmLevel;                    //Set global alarm level variable
       logalarmTriggered();
@@ -807,7 +812,7 @@ void alarmState(byte alarmLevel) {                    //Changes the alarm status
 
   }
 
-      if(alarmActivated != EEPROM.read(EEPROM_ALARM)){    // Update eeprom value
+      if(alarmActivated != EEPROM.read(EEPROM_ALARM)){    // Update EEPROM value
          EEPROM.write(EEPROM_ALARM,alarmActivated); 
          }
 
@@ -1273,7 +1278,7 @@ int checkUser(unsigned long tagNumber)                                  // Check
 
 
 
-void dumpUser(byte usernum)                                            // Return information ona particular entry in the local DB
+void dumpUser(byte usernum)                                            // Return information on a particular entry in the local DB
 {                                                                      // Users number 0..NUMUSERS
 
 

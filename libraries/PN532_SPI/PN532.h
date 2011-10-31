@@ -6,6 +6,7 @@
 
 
 #include <WProgram.h>
+#include <SPI.h>
 
 #define PN532_PREAMBLE 0x00
 #define PN532_STARTCODE1 0x00
