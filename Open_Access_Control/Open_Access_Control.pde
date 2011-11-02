@@ -100,7 +100,7 @@ const long  superUserList[] = { gonzo, snake, satan};  // Super user table (cann
 
 #define SCK 13
 #define MOSI 11
-#define NFC_SS 4
+#define NFC_SS 5
 #define MISO 12
 
 // TODO find out from Arclight why the comments don't match the code

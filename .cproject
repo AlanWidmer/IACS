@@ -74,11 +74,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.cross.exe.debug.382621971.1259635252" name="Open_Access_Control.pde" rcbsApplicability="disable" resourcePath="Open_Access_Control/Open_Access_Control.pde" toolsToInvoke="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1276435108.1071958588">
-						<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1276435108.1071958588" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1276435108">
-							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.905435113" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-						</tool>
-					</fileInfo>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>

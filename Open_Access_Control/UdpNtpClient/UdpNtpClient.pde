@@ -20,6 +20,8 @@
 #include <Ethernet.h>
 #include <Udp.h>
 
+#include <PN532.h>
+
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
 byte mac[] = {  
@@ -37,8 +39,16 @@ const int NTP_PACKET_SIZE= 48; // NTP time stamp is in the first 48 bytes of the
 
 byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets 
 
+#define SCK 13
+#define MOSI 11
+#define NFC_SS 5
+#define MISO 12
+
+PN532 nfc(SCK, MISO, MOSI, NFC_SS);
+
 void setup() 
 {
+  nfc.begin();
   // start Ethernet and UDP
   Ethernet.begin(mac,ip);
   Udp.begin(localPort);

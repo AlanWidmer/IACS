@@ -43,7 +43,7 @@ void setup()
   Ethernet.begin(mac,ip);
   Udp.begin(localPort);
 
-  Serial.begin(9600);
+  Serial.begin(57600);
 }
 
 void loop()
