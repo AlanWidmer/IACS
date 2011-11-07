@@ -131,6 +131,8 @@ class W5100Class {
 public:
   void init();
 
+  void select();
+
   /**
    * @brief	This function is being used for copy the data form Receive buffer of the chip to application buffer.
    * 

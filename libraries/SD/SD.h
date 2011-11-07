@@ -52,6 +52,11 @@ public:
   // before other methods are used.
   boolean begin(uint8_t csPin = SD_CHIP_SELECT_PIN);
   
+  // This selects the SD card by initializing the SPI hardware to the
+  // correct protocol for the SD card. Only neccessary to call this in a system
+  // that has more than one SPI device.
+  void select(void);
+
   // Open the specified file/directory with the supplied mode (e.g. read or
   // write, etc). Returns a File object for interacting with the file.
   // Note that currently only one file can be open at a time.

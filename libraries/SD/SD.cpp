@@ -344,6 +344,14 @@ boolean SDClass::begin(uint8_t csPin) {
          root.openRoot(volume);
 }
 
+// TODO add doxygen comment
+void select(void)
+{
+  SPI.setBitOrder(1);
+  SPI.setClockDivider(0);
+  SPI.setDataMode(0);
+}
+
 
 File SDClass::open(char *filepath, uint8_t mode) {
   /*

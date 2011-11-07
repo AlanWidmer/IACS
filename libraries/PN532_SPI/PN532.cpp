@@ -24,21 +24,27 @@ PN532::PN532(uint8_t clk, uint8_t miso, uint8_t mosi, uint8_t ss) {
     _ss = ss;
 
     pinMode(_ss, OUTPUT);
-    pinMode(_clk, OUTPUT);
-    pinMode(_mosi, OUTPUT);
-    pinMode(_miso, INPUT);
-    PN532_SPI.begin();
+    // TODO the lines below are unnecessary because the SD constructor sets these for
+    // all objects that rely on the SPI bus.
+//    pinMode(_clk, OUTPUT);
+//    pinMode(_mosi, OUTPUT);
+//    pinMode(_miso, INPUT);
+    digitalWrite(_ss, HIGH); // deselect
+
+// TODO remove    PN532_SPI.begin();
 }
 
 void PN532::begin() {
-    digitalWrite(_ss, LOW);
     PN532_SPI.setDataMode(0);
     PN532_SPI.setBitOrder(0);
     PN532_SPI.setClockDivider(0);
+    digitalWrite(_ss, LOW);
 
     delay(1000);
 
     // not exactly sure why but we have to send a dummy command to get synced up
+    // TODO read the datasheet for the PN532 and make this either go away OR only execute the
+    // first time that begin() is called
     pn532_packetbuffer[0] = PN532_FIRMWAREVERSION;
     sendCommandCheckAck(pn532_packetbuffer, 1);
 

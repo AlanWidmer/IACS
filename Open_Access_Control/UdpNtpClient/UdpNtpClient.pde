@@ -59,6 +59,7 @@ void setup()
 void loop()
 {
   Serial.println("Start loop");
+  Ethernet.select();
   sendNTPpacket(timeServer); // send an NTP packet to a time server
 
     // wait to see if a reply is available

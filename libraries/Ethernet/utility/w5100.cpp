@@ -29,6 +29,7 @@ void W5100Class::init(void)
 
   SPI.begin();
   initSS();
+  select();
   
   writeMR(1<<RST);
   writeTMSR(0x55);
@@ -39,6 +40,14 @@ void W5100Class::init(void)
     RBASE[i] = RXBUF_BASE + RSIZE * i;
   }
 }
+
+void W5100Class::select(void)
+{
+  SPI.setBitOrder(1);
+  SPI.setDataMode(0);
+  SPI.setClockDivider(0);
+}
+
 
 uint16_t W5100Class::getTXFreeSize(SOCKET s)
 {

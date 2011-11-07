@@ -16,6 +16,7 @@ public:
   void begin(uint8_t *, uint8_t *);
   void begin(uint8_t *, uint8_t *, uint8_t *);
   void begin(uint8_t *, uint8_t *, uint8_t *, uint8_t *);
+  void select(void);
   friend class Client;
   friend class Server;
 };

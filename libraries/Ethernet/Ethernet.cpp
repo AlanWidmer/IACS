@@ -26,11 +26,17 @@ void EthernetClass::begin(uint8_t *mac, uint8_t *ip, uint8_t *gateway)
 
 void EthernetClass::begin(uint8_t *mac, uint8_t *ip, uint8_t *gateway, uint8_t *subnet)
 {
+  select();
   W5100.init();
   W5100.setMACAddress(mac);
   W5100.setIPAddress(ip);
   W5100.setGatewayIp(gateway);
   W5100.setSubnetMask(subnet);
+}
+
+void EthernetClass::select(void)
+{
+  W5100.select();
 }
 
 EthernetClass Ethernet;
