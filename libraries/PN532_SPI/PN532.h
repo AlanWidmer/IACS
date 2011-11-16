@@ -45,6 +45,7 @@ public:
     PN532(uint8_t cs, uint8_t clk, uint8_t mosi, uint8_t miso);
 
     void begin(void);
+    void select(void);
 
     boolean SAMConfig(void);
     uint32_t getFirmwareVersion(void);

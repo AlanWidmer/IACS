@@ -51,6 +51,15 @@ void PN532::begin() {
     // ignore response!
 }
 
+
+void PN532::select() {
+    PN532_SPI.setDataMode(0);
+    PN532_SPI.setBitOrder(0);
+    PN532_SPI.setClockDivider(0);
+    digitalWrite(_ss, LOW);
+}
+
+
 uint32_t PN532::getFirmwareVersion(void) {
     uint32_t response;
 
