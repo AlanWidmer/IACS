@@ -24,20 +24,13 @@ PN532::PN532(uint8_t clk, uint8_t miso, uint8_t mosi, uint8_t ss) {
     _ss = ss;
 
     pinMode(_ss, OUTPUT);
-    // TODO the lines below are unnecessary because the SD constructor sets these for
-    // all objects that rely on the SPI bus.
-//    pinMode(_clk, OUTPUT);
-//    pinMode(_mosi, OUTPUT);
-//    pinMode(_miso, INPUT);
     digitalWrite(_ss, HIGH); // deselect
-
-// TODO remove    PN532_SPI.begin();
 }
 
 void PN532::begin() {
     PN532_SPI.setDataMode(0);
     PN532_SPI.setBitOrder(0);
-    PN532_SPI.setClockDivider(0);
+    PN532_SPI.setClockDivider(2);
     digitalWrite(_ss, LOW);
 
     delay(1000);
@@ -55,7 +48,7 @@ void PN532::begin() {
 void PN532::select() {
     PN532_SPI.setDataMode(0);
     PN532_SPI.setBitOrder(0);
-    PN532_SPI.setClockDivider(0);
+    PN532_SPI.setClockDivider(2);
     digitalWrite(_ss, LOW);
 }
 

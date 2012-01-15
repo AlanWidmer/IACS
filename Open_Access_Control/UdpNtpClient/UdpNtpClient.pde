@@ -20,6 +20,7 @@
 #include <Ethernet.h>
 #include <Udp.h>
 
+
 #include <PN532.h>
 
 // Enter a MAC address and IP address for your controller below.
@@ -48,27 +49,43 @@ PN532 nfc(SCK, MISO, MOSI, NFC_SS);
 
 void setup() 
 {
-  nfc.begin();
+  Serial.begin(57600);
+  Serial.println("Setup starting");
+  pinMode(NFC_SS, OUTPUT);
+  digitalWrite(NFC_SS, HIGH); //deselect
+
+  // TODO this is just temp until nfc.begin works
+  //pinMode(NFC_SS, OUTPUT);
+  //digitalWrite(NFC_SS, HIGH); //deselect
   // start Ethernet and UDP
   Ethernet.begin(mac,ip);
+  Serial.println("Ethernet begin complete");
   Udp.begin(localPort);
+  Serial.println("Udp begin complete");
 
-  Serial.begin(57600);
+  //nfc.begin();
+  Serial.println("NFC begin complete");
+
+  Serial.println("Setup complete");
+
 }
 
 void loop()
 {
   Serial.println("Start loop");
-  Ethernet.select();
+  // Ethernet.select();
+  Serial.println("Ethernet selected");
   sendNTPpacket(timeServer); // send an NTP packet to a time server
+  Serial.println("Packet Sent");
 
     // wait to see if a reply is available
-  delay(1000);  
+  delay(1000);
   if ( Udp.available() ) {  
-    Udp.readPacket(packetBuffer,NTP_PACKET_SIZE);  // read the packet into the buffer
+      Serial.println("UDP Packet received");
+      Udp.readPacket(packetBuffer,NTP_PACKET_SIZE);  // read the packet into the buffer
 
     //the timestamp starts at byte 40 of the received packet and is four bytes,
-    // or two words, long. First, esxtract the two words:
+    // or two words, long. First, extract the two words:
 
     unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
     unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);  

@@ -45,7 +45,7 @@ void W5100Class::select(void)
 {
   SPI.setBitOrder(1);
   SPI.setDataMode(0);
-  SPI.setClockDivider(0);
+  SPI.setClockDivider(2);
 }
 
 
