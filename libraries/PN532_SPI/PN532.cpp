@@ -49,7 +49,8 @@ void PN532::select() {
     PN532_SPI.setDataMode(0);
     PN532_SPI.setBitOrder(0);
     PN532_SPI.setClockDivider(2);
-    digitalWrite(_ss, LOW);
+    // TODO Don't select the device until an NFC command is sent
+    // digitalWrite(_ss, LOW);
 }
 
 
