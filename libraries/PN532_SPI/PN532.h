@@ -5,7 +5,7 @@
 // by Seeed Technology Inc (www.seeedstudio.com)
 
 
-#include <WProgram.h>
+//#include <WProgram.h>
 #include <SPI.h>
 
 #define PN532_PREAMBLE 0x00
@@ -47,7 +47,7 @@ public:
     void begin(void);
     void select(void);
 
-    boolean SAMConfig(void);
+    bool SAMConfig(void);
     uint32_t getFirmwareVersion(void);
     uint32_t readPassiveTargetID(uint8_t cardbaudrate);
     uint32_t authenticateBlock(	uint8_t cardnumber /*1 or 2*/,
@@ -59,14 +59,14 @@ public:
     uint32_t readMemoryBlock(uint8_t cardnumber /*1 or 2*/,uint8_t blockaddress /*0 to 63*/, uint8_t * block);
     uint32_t writeMemoryBlock(uint8_t cardnumber /*1 or 2*/,uint8_t blockaddress /*0 to 63*/, uint8_t * block);
 
-    boolean sendCommandCheckAck(uint8_t *cmd, uint8_t cmdlen, uint16_t timeout = 1000);
+    bool sendCommandCheckAck(uint8_t *cmd, uint8_t cmdlen, uint16_t timeout = 1000);
 
     //
 
 private:
     uint8_t _ss, _clk, _mosi, _miso;
 
-    boolean spi_readack();
+    bool spi_readack();
     uint8_t readspistatus(void);
     void readspidata(uint8_t* buff, uint8_t n);
     void spiwritecommand(uint8_t* cmd, uint8_t cmdlen);

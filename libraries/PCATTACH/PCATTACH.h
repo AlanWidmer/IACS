@@ -8,8 +8,8 @@
 #define	_PCATTACH_H_ 
 #endif
 
-#include <WProgram.h>
-#define uint_8 byte
+//#include <WProgram.h>
+#define uint_8 uint8_t
 
 class PCATTACH {
 
@@ -19,8 +19,8 @@ PCATTACH();
 
 
 
-void PCattachInterrupt(byte pin, void (*userFunc)(void), int mode);
-void PCdetachInterrupt(byte pin);
+void PCattachInterrupt(uint8_t pin, void (*userFunc)(void), int mode);
+void PCdetachInterrupt(uint8_t pin);
 
 
 static void PCint(uint8_t);

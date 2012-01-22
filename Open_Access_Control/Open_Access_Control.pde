@@ -104,13 +104,13 @@ const long  superUserList[] = { gonzo, snake, satan};  // Super user table (cann
 #define MISO 12
 
 // TODO find out from Arclight why the comments don't match the code
-byte reader1Pins[]={2,3};               // Reader 1 connected to pins 4,5
-// TODO byte reader2Pins[]= {4,5};              // Reader2 connected to pins 6,7
+uint8_t reader1Pins[]={2,3};               // Reader 1 connected to pins 4,5
+// TODO uint8_t reader2Pins[]= {4,5};              // Reader2 connected to pins 6,7
 
-//byte reader3Pins[]= {10,11};                // Reader3 connected to pins X,Y (Not implemented on v1.x and 2.x Access Control Board)
+//uint8_t reader3Pins[]= {10,11};                // Reader3 connected to pins X,Y (Not implemented on v1.x and 2.x Access Control Board)
 
-const byte analogsensorPins[] = {0,1,2,3};    // Alarm Sensors connected to other analog pins
-const byte relayPins[]= {6,7,8,9};            // Relay output pins
+const uint8_t analogsensorPins[] = {0,1,2,3};    // Alarm Sensors connected to other analog pins
+const uint8_t relayPins[]= {6,7,8,9};            // Relay output pins
 
 bool door1Locked=true;                        // Keeps track of whether the doors are supposed to be locked right now
 bool door2Locked=true;
@@ -118,26 +118,26 @@ bool door2Locked=true;
 unsigned long door1locktimer=0;               // Keep track of when door is supposed to be relocked
 unsigned long door2locktimer=0;               // after access granted.
 
-boolean doorChime=false;                       // Keep track of when door chime last activated
-boolean doorClosed=false;                      // Keep track of when door last closed for exit delay
+bool doorChime=false;                       // Keep track of when door chime last activated
+bool doorClosed=false;                      // Keep track of when door last closed for exit delay
 
 unsigned long alarmDelay=0;                    // Keep track of alarm delay. Used for "delayed activation" or level 2 alarm.
 unsigned long alarmSirenTimer=0;               // Keep track of how long alarm has gone off
 
 
 unsigned long consolefailTimer=0;               // Console password timer for failed logins
-byte consoleFail=0;
+uint8_t consoleFail=0;
 #define numUsers (sizeof(superUserList)/sizeof(long))                  //User access array size (used in later loops/etc)
-#define NUMDOORS (sizeof(doorPin)/sizeof(byte))
-#define numAlarmPins (sizeof(analogsensorPins)/sizeof(byte))
+#define NUMDOORS (sizeof(doorPin)/sizeof(uint8_t))
+#define numAlarmPins (sizeof(analogsensorPins)/sizeof(uint8_t))
 
 //Other global variables
-byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;     // Global RTC clock variables. Can be set using DS1307.getDate function.
+uint8_t second, minute, hour, dayOfWeek, dayOfMonth, month, year;     // Global RTC clock variables. Can be set using DS1307.getDate function.
 
-byte alarmActivated = EEPROM.read(EEPROM_ALARM);                   // Read the last alarm state as saved in eeprom.
-byte alarmArmed = EEPROM.read(EEPROM_ALARMARMED);                  // Alarm level variable (0..5, 0==OFF) 
+uint8_t alarmActivated = EEPROM.read(EEPROM_ALARM);                   // Read the last alarm state as saved in eeprom.
+uint8_t alarmArmed = EEPROM.read(EEPROM_ALARMARMED);                  // Alarm level variable (0..5, 0==OFF) 
 
-boolean sensor[4]={false};                                         // Keep track of tripped sensors, do not log again until reset.
+bool sensor[4]={false};                                         // Keep track of tripped sensors, do not log again until reset.
 unsigned long sensorDelay[2]={0};                                  // Same as above, but sets a timer for 2 of them. Useful for logging
                                                                    // motion detector hits for "occupancy check" functions.
 
@@ -148,7 +148,7 @@ volatile long reader2 = 0;
 volatile int  reader2Count = 0;
 int userMask1=0;
 int userMask2=0;
-boolean keypadGranted=0;                                       // Variable that is set for authenticated users to use keypad after login
+bool keypadGranted=0;                                       // Variable that is set for authenticated users to use keypad after login
 long nfcId;
 
 volatile long reader3 = 0;                                   // Uncomment if using a third reader.
@@ -160,8 +160,8 @@ unsigned long keypadValue=0;
 
 // Serial terminal buffer (needs to be global)
 char inString[40]={0};                                         // Size of command buffer (<=128 for Arduino)
-byte inCount=0;
-boolean privmodeEnabled = false;                               // Switch for enabling "privileged" commands
+uint8_t inCount=0;
+bool privmodeEnabled = false;                               // Switch for enabling "privileged" commands
 
 
 
@@ -226,7 +226,7 @@ void setup(){           // Runs once at Arduino boot-up
 
   //Initialize output relays
 
-  for(byte i=0; i<4; i++){        
+  for(uint8_t i=0; i<4; i++){        
     pinMode(relayPins[i], OUTPUT);                                                      
     digitalWrite(relayPins[i], LOW);                  // Sets the relay outputs to LOW (relays off)
   }
@@ -235,13 +235,13 @@ void setup(){           // Runs once at Arduino boot-up
  //ds1307.setDateDs1307(0,37,23,6,25,2,11);         
   /*  Sets the date/time (needed once at commissioning)
    
-   byte second,        // 0-59
-   byte minute,        // 0-59
-   byte hour,          // 1-23
-   byte dayOfWeek,     // 1-7
-   byte dayOfMonth,    // 1-28/29/30/31
-   byte month,         // 1-12
-   byte year);          // 0-99
+   uint8_t second,        // 0-59
+   uint8_t minute,        // 0-59
+   uint8_t hour,          // 1-23
+   uint8_t dayOfWeek,     // 1-7
+   uint8_t dayOfMonth,    // 1-28/29/30/31
+   uint8_t month,         // 1-12
+   uint8_t year);          // 0-99
    */
 
 
@@ -674,7 +674,7 @@ void runCommand(long command) {         // Run any commands entered at the pin p
 
    if((pollAlarm(3) == 0) && (pollAlarm(2) == 0)) {                  // Do not arm the alarm if doors are open
 
-     for(byte i=0; i<30; i++) {
+     for(uint8_t i=0; i<30; i++) {
          if((pollAlarm(3) !=0) && doorClosed==false) {             // Set door to be unlocked until alarm timeout or user exits
           lockall();    
           doorClosed=true; 
@@ -753,7 +753,7 @@ void runCommand(long command) {         // Run any commands entered at the pin p
  resistors can be used to check more zones from the analog pins.
  */
 
-void alarmState(byte alarmLevel) {                    //Changes the alarm status based on this flow
+void alarmState(uint8_t alarmLevel) {                    //Changes the alarm status based on this flow
 
   logalarmState(alarmLevel); 
   switch (alarmLevel) {                              
@@ -818,8 +818,8 @@ void alarmState(byte alarmLevel) {                    //Changes the alarm status
 
 }  //End of alarmState()
 
-void chirpAlarm(byte chirps){            // Chirp the siren pin or strobe to indicate events.      
-  for(byte i=0; i<chirps; i++) {
+void chirpAlarm(uint8_t chirps){            // Chirp the siren pin or strobe to indicate events.      
+  for(uint8_t i=0; i<chirps; i++) {
     digitalWrite(ALARMSTROBEPIN, HIGH);
     delay(100);
     digitalWrite(ALARMSTROBEPIN, LOW);
@@ -827,7 +827,7 @@ void chirpAlarm(byte chirps){            // Chirp the siren pin or strobe to ind
   }    
 }                                   
 
-byte pollAlarm(byte input){
+uint8_t pollAlarm(uint8_t input){
 
   // Return 1 if sensor shows < pre-defined voltage.
   delay(20);
@@ -857,7 +857,7 @@ void trainAlarm(){                       // Train the system about the default s
     Serial.print(" ");
     Serial.print("value:");
     Serial.println(avg);
-    EEPROM.write((EEPROM_ALARMZONES+i),byte(avg));   //Save results to EEPROM
+    EEPROM.write((EEPROM_ALARMZONES+i),uint8_t(avg));   //Save results to EEPROM
     avg=0;
   }
 
@@ -867,7 +867,7 @@ void trainAlarm(){                       // Train the system about the default s
 
 }
 
-void armAlarm(byte level){                       // Arm the alarm and set to level
+void armAlarm(uint8_t level){                       // Arm the alarm and set to level
   alarmArmed = level;
   logalarmArmed(level);
 
@@ -904,7 +904,7 @@ int found=-1;
 
 
 void doorUnlock(int input) {          //Send an unlock signal to the door and flash the Door LED
-byte dp=1;
+uint8_t dp=1;
   if(input == 1) {
     dp=DOORPIN1; }
    else(dp=DOORPIN2);
@@ -917,7 +917,7 @@ byte dp=1;
 }
 
 void doorLock(int input) {          //Send an unlock signal to the door and flash the Door LED
-byte dp=1;
+uint8_t dp=1;
   if(input == 1) {
     dp=DOORPIN1; }
    else(dp=DOORPIN2);
@@ -948,7 +948,7 @@ void PROGMEMprintln(const prog_uchar str[])    // Function to retrieve logging s
   char c;
   if(!str) return;
   while((c = pgm_read_byte(str++))){
-    Serial.print(c,BYTE);
+    Serial.print(c);
                                    }
     Serial.println();
 }
@@ -958,7 +958,7 @@ void PROGMEMprint(const prog_uchar str[])    // Function to retrieve logging str
   char c;
   if(!str) return;
   while((c = pgm_read_byte(str++))){
-    Serial.print(c,BYTE);
+    Serial.print(c);
                                    }
 
 }
@@ -1026,7 +1026,7 @@ void logChime() {
     PROGMEMprintln(doorChimeMessage);
 }
 
-void logTagPresent (long user, byte reader) {     //Log Tag Presented events
+void logTagPresent (long user, uint8_t reader) {     //Log Tag Presented events
   logDate();
   Serial.print("User ");
  if(DEBUG==2){ Serial.print(user,HEX);}
@@ -1034,7 +1034,7 @@ void logTagPresent (long user, byte reader) {     //Log Tag Presented events
   Serial.println(reader,DEC);
 }
 
-void logAccessGranted(long user, byte reader) {     //Log Access events
+void logAccessGranted(long user, uint8_t reader) {     //Log Access events
   logDate();
   Serial.print("User ");
  if(DEBUG==2){Serial.print(user,HEX);}
@@ -1042,7 +1042,7 @@ void logAccessGranted(long user, byte reader) {     //Log Access events
   Serial.println(reader,DEC);
 }                                         
 
-void logAccessDenied(long user, byte reader) {     //Log Access denied events
+void logAccessDenied(long user, uint8_t reader) {     //Log Access denied events
   logDate();
   Serial.print("User ");
  if(DEBUG==1){Serial.print(user,HEX);} 
@@ -1050,7 +1050,7 @@ void logAccessDenied(long user, byte reader) {     //Log Access denied events
   Serial.println(reader,DEC);
 }   
 
-void logkeypadCommand(byte reader, long command){
+void logkeypadCommand(uint8_t reader, long command){
   logDate();
   Serial.print("Command ");
   Serial.print(command,HEX);
@@ -1061,7 +1061,7 @@ void logkeypadCommand(byte reader, long command){
 
 
 
-void logalarmSensor(byte zone) {     //Log Alarm zone events
+void logalarmSensor(uint8_t zone) {     //Log Alarm zone events
   logDate();
   Serial.print("Zone ");
   Serial.print(zone,DEC);
@@ -1073,7 +1073,7 @@ void logalarmTriggered() {
       Serial.println("Alarm triggered!");   // This phrase can be scanned for by alerting scripts.
  }
 
-void logunLock(long user, byte door) {        //Log unlock events
+void logunLock(long user, uint8_t door) {        //Log unlock events
   logDate();
   Serial.print("User ");
   Serial.print(user,DEC);
@@ -1082,13 +1082,13 @@ void logunLock(long user, byte door) {        //Log unlock events
 
 }
 
-void logalarmState(byte level) {        //Log unlock events
+void logalarmState(uint8_t level) {        //Log unlock events
   logDate();
   Serial.print("Alarm level changed to ");
   Serial.println(level,DEC);
 }
 
-void logalarmArmed(byte level) {        //Log unlock events
+void logalarmArmed(uint8_t level) {        //Log unlock events
   logDate();
   Serial.print("Alarm armed level changed to ");
   Serial.println(level,DEC);
@@ -1166,10 +1166,10 @@ void clearUsers()    //Erases all users from EEPROM
   }
 }
 
-void addUser(int userNum, byte userMask, unsigned long tagNumber)       // Modifies a user an entry in the local database.
+void addUser(int userNum, uint8_t userMask, unsigned long tagNumber)       // Modifies a user an entry in the local database.
 {                                                                       // Users number 0..NUMUSERS
   int offset = (EEPROM_FIRSTUSER+(userNum*5));                          // Find the offset to write this user to
-  byte EEPROM_buffer[5] ={0};                                           // Buffer for creating the 4 byte values to write. Usermask is stored in byte 5.
+  uint8_t EEPROM_buffer[5] ={0};                                           // Buffer for creating the 4 uint8_t values to write. Usermask is stored in uint8_t 5.
 
   logDate();
 
@@ -1183,16 +1183,16 @@ void addUser(int userNum, byte userMask, unsigned long tagNumber)       // Modif
 
 
 
-    EEPROM_buffer[0] = byte(tagNumber &  0xFFF);   // Fill the buffer with the values to write to bytes 0..4 
-    EEPROM_buffer[1] = byte(tagNumber >> 8);
-    EEPROM_buffer[2] = byte(tagNumber >> 16);
-    EEPROM_buffer[3] = byte(tagNumber >> 24);
-    EEPROM_buffer[4] = byte(userMask);
+    EEPROM_buffer[0] = uint8_t(tagNumber &  0xFFF);   // Fill the buffer with the values to write to uint8_ts 0..4 
+    EEPROM_buffer[1] = uint8_t(tagNumber >> 8);
+    EEPROM_buffer[2] = uint8_t(tagNumber >> 16);
+    EEPROM_buffer[3] = uint8_t(tagNumber >> 24);
+    EEPROM_buffer[4] = uint8_t(userMask);
 
 
 
     for(int i=0; i<5; i++){
-      EEPROM.write((offset+i), (EEPROM_buffer[i])); // Store the resulting value in 5 bytes of EEPROM.
+      EEPROM.write((offset+i), (EEPROM_buffer[i])); // Store the resulting value in 5 uint8_ts of EEPROM.
 
     }
 
@@ -1220,7 +1220,7 @@ void deleteUser(int userNum)                                            // Delet
 
 
     for(int i=0; i<5; i++){
-      EEPROM.write((offset+i), 0xFF); // Store the resulting value in 5 bytes of EEPROM.
+      EEPROM.write((offset+i), 0xFF); // Store the resulting value in 5 uint8_ts of EEPROM.
                                                     // Starting at offset.
 
 
@@ -1240,7 +1240,7 @@ int checkUser(unsigned long tagNumber)                                  // Check
 {                                                                       // Users number 0..NUMUSERS
   // Find the first offset to check
 
-  unsigned long EEPROM_buffer=0;                                         // Buffer for recreating tagNumber from the 4 stored bytes.
+  unsigned long EEPROM_buffer=0;                                         // Buffer for recreating tagNumber from the 4 stored uint8_ts.
   int found=-1;
   
   logDate();
@@ -1278,11 +1278,11 @@ int checkUser(unsigned long tagNumber)                                  // Check
 
 
 
-void dumpUser(byte usernum)                                            // Return information on a particular entry in the local DB
+void dumpUser(uint8_t usernum)                                            // Return information on a particular entry in the local DB
 {                                                                      // Users number 0..NUMUSERS
 
 
-  unsigned long EEPROM_buffer=0;                                       // Buffer for recreating tagNumber from the 4 stored bytes.
+  unsigned long EEPROM_buffer=0;                                       // Buffer for recreating tagNumber from the 4 stored uint8_ts.
 
 
   if((0<=usernum) && (usernum <=199)){
@@ -1328,12 +1328,12 @@ void dumpUser(byte usernum)                                            // Return
 void readCommand() {                                               
                                                                     
 
-byte stringSize=(sizeof(inString)/sizeof(char));                    
+uint8_t stringSize=(sizeof(inString)/sizeof(char));                    
 char cmdString[4][9];                                             // Size of commands (4=number of items to parse, 10 = max length of each)
 
 
-byte j=0;                                                          // Counters
-byte k=0;
+uint8_t j=0;                                                          // Counters
+uint8_t k=0;
 char cmd=0;
 
 
@@ -1351,7 +1351,7 @@ char ch;
 
 
 if(inCount==0) {
-  for(byte i=0;  i<stringSize; i++) {
+  for(uint8_t i=0;  i<stringSize; i++) {
     cmdString[j][k] = inString[i];
     if(k<9) k++;
     else break;

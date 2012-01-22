@@ -25,20 +25,20 @@
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
-byte mac[] = {  
+uint8_t mac[] = {  
   0x90, 0xA2, 0xDA, 0x00, 0x3F, 0x78 };
-byte ip[] = { 
+uint8_t ip[] = { 
   10,0,1,15 };
 
 
 unsigned int localPort = 8888;      // local port to listen for UDP packets
 
-byte timeServer[] = { 
+uint8_t timeServer[] = { 
   216, 171, 124, 36}; // NTP server
 
-const int NTP_PACKET_SIZE= 48; // NTP time stamp is in the first 48 bytes of the message
+const int NTP_PACKET_SIZE= 48; // NTP time stamp is in the first 48 uint8_ts of the message
 
-byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets 
+uint8_t packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets 
 
 #define SCK 13
 #define MOSI 11
@@ -84,12 +84,12 @@ void loop()
       Serial.println("UDP Packet received");
       Udp.readPacket(packetBuffer,NTP_PACKET_SIZE);  // read the packet into the buffer
 
-    //the timestamp starts at byte 40 of the received packet and is four bytes,
+    //the timestamp starts at uint8_t 40 of the received packet and is four uint8_ts,
     // or two words, long. First, extract the two words:
 
     unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
     unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);  
-    // combine the four bytes (two words) into a long integer
+    // combine the four uint8_ts (two words) into a long integer
     // this is NTP time (seconds since Jan 1 1900):
     unsigned long secsSince1900 = highWord << 16 | lowWord;  
     Serial.print("Seconds since Jan 1 1900 = " );
@@ -122,9 +122,9 @@ void loop()
 }
 
 // send an NTP request to the time server at the given address 
-unsigned long sendNTPpacket(byte *address)
+unsigned long sendNTPpacket(uint8_t *address)
 {
-  // set all bytes in the buffer to 0
+  // set all uint8_ts in the buffer to 0
   memset(packetBuffer, 0, NTP_PACKET_SIZE); 
   // Initialize values needed to form NTP request
   // (see URL above for details on the packets)
@@ -132,7 +132,7 @@ unsigned long sendNTPpacket(byte *address)
   packetBuffer[1] = 0;     // Stratum, or type of clock
   packetBuffer[2] = 6;     // Polling Interval
   packetBuffer[3] = 0xEC;  // Peer Clock Precision
-  // 8 bytes of zero for Root Delay & Root Dispersion
+  // 8 uint8_ts of zero for Root Delay & Root Dispersion
   packetBuffer[12]  = 49; 
   packetBuffer[13]  = 0x4E;
   packetBuffer[14]  = 49;

@@ -8,7 +8,7 @@
 #define	_WIEGAND26_H_ 
 #endif
 
-#include <WProgram.h>
+//TODO #include <WProgram.h>
 
 class WIEGAND26 {
 public:

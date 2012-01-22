@@ -28,13 +28,13 @@ private:
     DateTimeClass * dateTime;
     
     void initialize(DateTimeClass * dt);
-    void getTimesFor(byte year); // only this needs to change for different implementations
+    void getTimesFor(uint8_t year); // only this needs to change for different implementations
 
 public:
 	DaylightSavingsClass();
     DaylightSavingsClass(DateTimeClass * dt);
     
-    boolean check(); // 
+    bool check(); // 
     time_t getSpringForward();
     time_t getFallBack();
 };
